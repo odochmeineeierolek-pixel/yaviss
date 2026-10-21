@@ -1,0 +1,26 @@
+name: Build YAVIS-Setup.exe
+on: [workflow_dispatch, push]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover tests
+      - run: >
+          pyinstaller --noconfirm --windowed --name YAVIS
+          --collect-all faster_whisper --collect-all ctranslate2 --collect-all av --collect-all ddgs
+          --collect-all customtkinter --hidden-import edge_tts
+          --hidden-import pyttsx3.drivers --hidden-import pyttsx3.drivers.sapi5 --hidden-import comtypes
+          run_yavis.py
+      - run: choco install innosetup -y --no-progress
+      - run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer.iss'
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: YAVIS ${{ github.run_number }}
+          files: installer/YAVIS-Setup.exe
