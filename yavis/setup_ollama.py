@@ -37,7 +37,7 @@ def ensure_ollama(cfg, log=print):
             from . import config, voice
             p = config.DATA_DIR / "OllamaSetup.exe"
             voice._download("https://ollama.com/download/OllamaSetup.exe", p, log)
-            subprocess.run([str(p), "/SILENT"], check=False)
+            subprocess.run([str(p), "/SILENT"], check=False, creationflags=0x08000000)
             exe = _find_ollama()
         if not exe:
             raise RuntimeError("Ollama konnte nicht installiert werden. Bitte von https://ollama.com/download installieren.")
@@ -89,7 +89,7 @@ def run_setup_gui(cfg):
             ensure_ollama(cfg, log)
             prefetch_whisper(cfg, log)
             from . import voice
-            voice.ensure_piper(cfg.get("piper_voice", "ramona"), log)
+            voice.ensure_piper(voice.voice_cfg(cfg)["piper"], log)
             log("\nFertig! YAVIS kann jetzt gestartet werden. Sage 'YAVIS'.")
         except Exception as e:
             log(f"\nFEHLER: {e}\nBitte Internetverbindung prüfen und YAVIS-Einrichtung erneut starten.")

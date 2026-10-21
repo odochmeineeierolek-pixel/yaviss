@@ -2,6 +2,7 @@
 import os, subprocess, time, re
 from pathlib import Path
 from urllib.parse import urlparse
+from . import config
 
 
 def _t(name, desc, props=None, req=None):
@@ -44,7 +45,7 @@ class Tools:
         cmd = self.cfg["allowed_apps"].get(name.strip().lower())
         if not cmd:
             return f"'{name}' ist nicht freigegeben. Erlaubt: {', '.join(sorted(self.cfg['allowed_apps']))}"
-        subprocess.Popen(cmd, shell=True)
+        subprocess.Popen(cmd, shell=True, creationflags=config.NOWIN)   # ohne Konsolenfenster
         return f"{name} gestartet."
 
     def t_search_files(self, query):
