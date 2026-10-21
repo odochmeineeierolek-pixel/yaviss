@@ -1,0 +1,15 @@
+requests
+numpy
+sounddevice
+faster-whisper
+pyttsx3
+pyautogui
+pyperclip
+PyGetWindow
+send2trash
+ddgs
+pystray
+Pillow
+pyinstaller
+customtkinter
+edge-tts
